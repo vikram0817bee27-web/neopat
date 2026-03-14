@@ -1,0 +1,48 @@
+#include <iostream>
+#include <vector>
+#include <map>
+#include <sstream>
+using namespace std;
+
+int main() {
+    int n, q;
+    cin >> n >> q;
+    cin.ignore(); // Clear newline
+
+    map<string, string> hrml;
+    vector<string> tag_stack;
+
+    for (int i = 0; i < n; ++i) {
+        string line;
+        getline(cin, line);
+        line.erase(remove(line.begin(), line.end(), '>'), line.end()); // Remove closing '>'
+
+        if (line.substr(0, 2) == "</") {
+            tag_stack.pop_back();
+        } else {
+            stringstream ss(line.substr(1)); // Skip opening '<'
+            string tag, attr, eq, val;
+            ss >> tag;
+            
+            tag_stack.push_back(tag);
+            string current_path = "";
+            for (int j = 0; j < tag_stack.size(); ++j) {
+                current_path += (j == 0 ? "" : ".") + tag_stack[j];
+            }
+
+            while (ss >> attr >> eq >> val) {
+                // Remove quotes from "value"
+                val = val.substr(1, val.length() - 2);
+                hrml[current_path + "~" + attr] = val;
+            }
+        }
+    }
+
+    for (int i = 0; i < q; ++i) {
+        string query;
+        getline(cin, query);
+        if (hrml.count(query)) cout << hrml[query] << endl;
+        else cout << "Not Found!" << endl;
+    }
+    return 0;
+}
