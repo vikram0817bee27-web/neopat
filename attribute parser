@@ -1,0 +1,62 @@
+#include <iostream>
+#include <vector>
+#include <map>
+#include <string>
+#include <sstream>
+#include <algorithm>
+
+using namespace std;
+
+int main() {
+    int n, q;
+    cin >> n >> q;
+    cin.ignore(); // Clear newline
+
+    map<string, string> hrml;
+    vector<string> tag_stack;
+
+    for (int i = 0; i < n; i++) {
+        string line;
+        getline(cin, line);
+        
+        // Handle closing tags
+        if (line.substr(0, 2) == "</") {
+            tag_stack.pop_back();
+        } 
+        // Handle opening tags
+        else {
+            // Remove brackets
+            line.erase(remove(line.begin(), line.end(), '<'), line.end());
+            line.erase(remove(line.begin(), line.end(), '>'), line.end());
+            
+            stringstream ss(line);
+            string tag_name, attr, eq, val;
+            
+            ss >> tag_name;
+            tag_stack.push_back(tag_name);
+            
+            // Build current path prefix
+            string path = "";
+            for (const string& t : tag_stack) {
+                path += (path.empty() ? "" : ".") + t;
+            }
+            
+            // Extract all attributes in the tag
+            while (ss >> attr >> eq >> val) {
+                // Remove quotes from value
+                val.erase(remove(val.begin(), val.end(), '\"'), val.end());
+                hrml[path + "~" + attr] = val;
+            }
+        }
+    }
+
+    // Process Queries
+    for (int i = 0; i < q; i++) {
+        string query;
+        getline(cin, query);
+        if (hrml.count(query)) cout << hrml[query] << endl;
+        else cout << "Not Found!" << endl;
+    }
+
+    return 0;
+}
