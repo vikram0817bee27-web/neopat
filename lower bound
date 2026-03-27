@@ -1,0 +1,33 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+
+int main() {
+    int n, q, val;
+    
+    // Read the size and the sorted array
+    if (!(cin >> n)) return 0;
+    vector<int> v(n);
+    for (int i = 0; i < n; i++) {
+        cin >> v[i];
+    }
+
+    // Process queries
+    cin >> q;
+    while (q--) {
+        cin >> val;
+        
+        // lower_bound finds the first element >= val
+        auto it = lower_bound(v.begin(), v.end(), val);
+        int index = (it - v.begin()) + 1; // Convert to 1-based index
+
+        if (it != v.end() && *it == val) {
+            cout << "Yes " << index << endl;
+        } else {
+            cout << "No " << index << endl;
+        }
+    }
+    return 0;
+}
