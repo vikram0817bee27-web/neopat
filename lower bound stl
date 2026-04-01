@@ -1,0 +1,41 @@
+#include <cmath>
+#include <cstdio>
+#include <vector>
+#include <iostream>
+#include <algorithm>
+using namespace std;
+
+
+int main() {
+    /* Enter your code here. Read input from STDIN. Print output to STDOUT */
+    int n;
+    cin >> n;
+    
+    vector<int> v(n);
+    for (int i = 0; i < n; i++) {
+        cin >> v[i];
+    }
+    
+    int q;
+    cin >> q;
+    while (q--) {
+        int val;
+        cin >> val;
+        
+        // Find the first element >= val
+        auto it = lower_bound(v.begin(), v.end(), val);
+        
+        // Calculate 1-based index
+        int index = (it - v.begin()) + 1;
+        
+        // Check if the value at that position is actually the one we want
+        if (*it == val) {
+            cout << "Yes " << index << endl;
+        } else {
+            cout << "No " << index << endl;
+        }
+    }
+    
+   
+     return 0;
+}
